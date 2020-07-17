@@ -1,25 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+// import firebaseDb from './firebase';
+
+import Main from './components/Main'
+import ListArticles from './components/admin/ListArticles'
+import ArticleForm from './components/admin/ArticleForm'
+import NotFound from './components/NotFound'
 
 function App() {
+  useEffect(() => {
+    // firebaseDb.child('thaw_admin_password').on('value', snapshot => {
+    //   console.log(snapshot.val());
+    // });
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Switch>
+        <Route exact path="/" component={Main} />
+        <Route exact path="/admin" component={ListArticles} />
+        <Route path="/admin/articles/:article_id?" component={ArticleForm} />
+        <Route path="*" component={NotFound} />
+      </Switch>
+    </BrowserRouter>
   );
 }
 
