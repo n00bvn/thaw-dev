@@ -1,7 +1,6 @@
 {
   "name": "thaw-dev",
   "version": "0.1.0",
-  "homepage": "https://thaw.dev/",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
@@ -21,7 +20,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "yarn run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build -r https://github.com/n00bvn/thaw-dev"
   },
   "eslintConfig": {
     "extends": "react-app"
