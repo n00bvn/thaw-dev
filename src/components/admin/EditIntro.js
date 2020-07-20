@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react'
-import firebaseDb from '../../firebase'
+import { firebaseDb } from '../../firebase'
 
 import TinymceEditor from './tinymce_editor'
 

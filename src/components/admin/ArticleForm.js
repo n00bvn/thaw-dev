@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import firebaseDb from '../../firebase'
+import { firebaseDb } from '../../firebase'
 
 import TinymceEditor from './tinymce_editor'
 import Loading from '../Loading'
@@ -19,7 +19,7 @@ export default function ArticleForm(props) {
       firebaseDb.ref(`articles/${props.match.params.article_id}`).once('value')
         .then(snapshot => {
           let article = snapshot.val();
-          article['tags'] = article['tags'].join(', ');
+          article.tags = article.tags.join(', ');
           setArticle(article);
           setLoading(false);
         })
@@ -35,21 +35,37 @@ export default function ArticleForm(props) {
 
   const handleSubmit = e => {
     e.preventDefault();
-    firebaseDb.ref('articles').push(article, error => {
-      if (error) {
-        alert('ERROR');
-        console.log(error);
-      } else {
-        props.history.goBack();
-      }
-    })
+    // update tags
+    const submit_article = {
+      ...article,
+      tags: article.tags.split(', ')
+    }
+
+    if (props.match.params.article_id) {
+      firebaseDb.ref(`articles/${props.match.params.article_id}`).set(submit_article, error => {
+        if (error) {
+          alert('ERROR');
+          console.log(error);
+        } else {
+          props.history.goBack();
+        }
+      });
+    } else {
+      firebaseDb.ref('articles').push(submit_article, error => {
+        if (error) {
+          alert('ERROR');
+          console.log(error);
+        } else {
+          props.history.goBack();
+        }
+      });
+    }
   }
 
   const handleChange = e => {
-    const val = e.target.name === 'tags' ? e.target.value.split(', ') : e.target.value;
     setArticle({
       ...article,
-      [e.target.name]: val
+      [e.target.name]: e.target.value
     });
   }
 

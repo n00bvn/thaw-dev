@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react'
-import firebaseDb from '../../firebase'
+import { firebaseDb, firebaseAuth } from '../../firebase'
 
 import EditIntro from './EditIntro'
 import Loading from '../Loading'
@@ -15,7 +15,7 @@ export default function ListArticles() {
           let map_articles = [];
           for (let key in a) {
             let article = a[key];
-            article['id'] = key;
+            article.id = key;
             map_articles.push(article);
           }
           setArticles(map_articles);
@@ -40,11 +40,22 @@ export default function ListArticles() {
       .then(() => {
         setArticles(
           articles.filter(article => {
-            return article['id'] !== article_id;
+            return article.id !== article_id;
           })
         );
       })
       .catch(error => {
+        alert('ERROR');
+        console.log(error);
+      })
+  }
+
+  const handleLogout = () => {
+    firebaseAuth.signOut()
+      .then(() => {
+        console.log('LOGGED OUT');
+      })
+      .catch((error) => {
         alert('ERROR');
         console.log(error);
       })
@@ -77,13 +88,13 @@ export default function ListArticles() {
                   <tbody>
                     {articles.map(article => {
                       return (
-                        <tr key={article['id']}>
-                          <td>{article['title']}</td>
-                          <td>{article['content']}</td>
-                          <td>{article['tags'].join(', ')}</td>
-                          <td>
-                            <a href={`/admin/articles/${article['id']}`} className="btn btn-success mr-3">Edit</a>
-                            <button className="btn btn-danger btn-sm" onClick={() => handleDelete(article['id'])}>Delete</button>
+                        <tr key={article.id}>
+                          <td>{article.title}</td>
+                          <td>{article.content.substr(0, 125)}</td>
+                          <td>{article.tags.join(', ')}</td>
+                          <td className="text-center">
+                            <a href={`/admin/articles/${article.id}`} className="btn btn-success">Edit</a>
+                            <button className="btn btn-danger btn-sm mt-3" onClick={() => handleDelete(article.id)}>Delete</button>
                           </td>
                         </tr>
                       )
@@ -101,7 +112,8 @@ export default function ListArticles() {
       </div>
 
       <div className="col-12 p-4 text-right">
-        <a href="/">Back to Index</a>
+        <button className="btn btn-link mr-5" onClick={() => handleLogout()}>Log Out</button>
+        <a href="/" className="ml-5">Back to Index</a>
       </div>
     </div>
   )
