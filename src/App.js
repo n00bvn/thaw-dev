@@ -7,7 +7,7 @@ import NotFound from './components/NotFound'
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="thaw-dev">
       <Switch>
         <Route exact path="/" component={Main} />
         <Route exact path="/admin/*" component={Admin} />
