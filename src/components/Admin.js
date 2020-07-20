@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import { HashRouter, Route, Switch } from 'react-router-dom'
 import { firebaseAuth } from '../firebase'
 
 import Auth from './admin/Auth'
@@ -18,7 +18,7 @@ export default function Admin() {
   });
 
   return (
-    <BrowserRouter basename="/admin">
+    <HashRouter basename="/admin">
       {loading ? <Loading /> : (
         admin ? (
           <Switch>
@@ -28,6 +28,6 @@ export default function Admin() {
           </Switch>
         ) : <Auth setAdmin={setAdmin} />
       )}
-    </BrowserRouter>
+    </HashRouter>
   )
 }
