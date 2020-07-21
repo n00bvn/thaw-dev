@@ -54,7 +54,7 @@ export default function Main() {
         short_intro.classList.toggle('d-none');
       });
     });
-    firebaseDb.ref('articles').on('value', snapshot => {
+    firebaseDb.ref('articles').once('value', snapshot => {
       const a = snapshot.val();
       if (a) {
         let map_articles = [];
@@ -69,14 +69,18 @@ export default function Main() {
           map_tags = map_tags.concat(article.tags);
         }
 
+        map_articles.sort((a1, a2) => {
+          return new Date(a2.createdAt) - new Date(a1.createdAt);
+        });
+
         setArticles(map_articles);
         setAllArticles(map_articles);
         setTags(filter_unique_array(map_tags));
 
-        setLoading(false);
-
         add_click_event_to_tags();
       }
+
+      setLoading(false);
     });
   }, []);
 
@@ -125,6 +129,9 @@ export default function Main() {
               <div className="col-12">
                 <h4>{article.title}</h4>
                 <div className="mt-3" id="article_content_area"></div>
+              </div>
+              <div className="col-12 mt-4 text-right">
+                <button className="btn btn-primary" onClick={() => setArticle(null)}>Back</button>
               </div>
             </div>
           </div>

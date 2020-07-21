@@ -1,5 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import { firebaseDb, firebaseAuth } from '../../firebase'
+import { Link } from 'react-router-dom'
 
 import EditIntro from './EditIntro'
 import Loading from '../Loading'
@@ -72,7 +73,7 @@ export default function ListArticles() {
           loading ? <Loading /> : (
             <Fragment>
               <div className="my-3 text-right">
-                <a href="/admin/articles/" className="btn btn-primary">Add new Article</a>
+                <Link to="/articles/" className="btn btn-primary">Add new Article</Link>
               </div>
 
               <div className="table-responsive">
@@ -93,7 +94,7 @@ export default function ListArticles() {
                           <td>{article.content.substr(0, 125)}</td>
                           <td>{article.tags.join(', ')}</td>
                           <td className="text-center">
-                            <a href={`/admin/articles/${article.id}`} className="btn btn-success">Edit</a>
+                            <Link to={`/articles/${article.id}`} className="btn btn-success">Edit</Link><br />
                             <button className="btn btn-danger btn-sm mt-3" onClick={() => handleDelete(article.id)}>Delete</button>
                           </td>
                         </tr>
