@@ -9,8 +9,8 @@ function App() {
   return (
     <HashRouter basename="/">
       <Switch>
-        <Route exact path="/" component={Main} />
         <Route exact path="/admin/*" component={Admin} />
+        <Route exact path="/*" component={Main} />
         <Route path="*" component={NotFound} />
       </Switch>
     </HashRouter>
