@@ -19,6 +19,9 @@ export default function ListArticles() {
             article.id = key;
             map_articles.push(article);
           }
+          map_articles.sort((a1, a2) => {
+            return new Date(a2.createdAt) - new Date(a1.createdAt);
+          });
           setArticles(map_articles);
         }
         setLoading(false);
