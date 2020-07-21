@@ -75,7 +75,9 @@ export default function Main() {
 
         setArticles(map_articles);
         setAllArticles(map_articles);
-        setTags(filter_unique_array(map_tags));
+        setTags(filter_unique_array(map_tags).sort(() => {
+          return .5 - Math.random();
+        }));
 
         add_click_event_to_tags();
       }
@@ -151,7 +153,7 @@ export default function Main() {
                   <div className="row">
                     {articles.map(article => {
                       return (
-                        <div className="col-md-6 col-sm-12 mb-md-0 mb-sm-3" key={article.id}>
+                        <div className="col-md-6 col-sm-12 mb-3" key={article.id}>
                           <div className="card">
                             <h5 className="card-header bg-secondary text-warning cs-pt badge-link-secondary"
                               onClick={() => setArticle(article)}>
@@ -160,10 +162,10 @@ export default function Main() {
                             <div className="card-body">
                               <p className="card-text text-truncate">{article.description}</p>
                             </div>
-                            <div className="card-footer text-right">
+                            <div className="card-footer text-right px-0">
                               {article.tags.map(tag => {
                                 return (
-                                  <button className="btn btn-link btnTag" key={tag}>{tag}</button>
+                                  <button className="btn btn-link btnTag footerTag py-0 px-2" key={tag}>{tag}</button>
                                 )
                               })}
                             </div>
@@ -174,7 +176,7 @@ export default function Main() {
                   </div>
                 </div>
 
-                <div className="col-sm-2 text-right d-none d-sm-block pt-4">
+                <div className="col-sm-2 text-center d-none d-sm-block pt-4 px-0">
                   {tag ? null : (
                     tags.map(tag => {
                       return (

@@ -9,3 +9,7 @@
 .badge-link-secondary:hover {
   background-color: rgb(108, 117, 125, 0.8) !important;
 }
+
+.footerTag {
+  font-size: 88%;
+}
