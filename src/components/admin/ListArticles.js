@@ -9,6 +9,7 @@ export default function ListArticles() {
   const [loading, setLoading] = useState(true);
   const [articles, setArticles] = useState([]);
   useEffect(() => {
+    document.getElementsByTagName("body")[0].style = 'padding-left: 0 !important';
     firebaseDb.ref('articles').once('value')
       .then(snapshot => {
         const a = snapshot.val();
@@ -66,9 +67,9 @@ export default function ListArticles() {
   }
 
   return (
-    <div className="container">
-      <div className="col-12">
-        <h1>Admin List Articles</h1>
+    <div className="container-fluid">
+      <div className="col-12 text-center">
+        <h4>Admin List Articles</h4>
       </div>
 
       <div className="col-12 mt-4">
@@ -93,7 +94,7 @@ export default function ListArticles() {
                     {articles.map(article => {
                       return (
                         <tr key={article.id}>
-                          <td>{article.title}</td>
+                          <td className="font-weight-bold">{article.title}</td>
                           <td>{article.content.substr(0, 125)}</td>
                           <td>{article.tags.join(', ')}</td>
                           <td className="text-center">

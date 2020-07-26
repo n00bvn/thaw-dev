@@ -29,7 +29,7 @@ export default function EditIntro({ toggleIntro }) {
 
   return (
     <Fragment>
-      <h1>Edit Intro</h1>
+      <h4>Edit Intro</h4>
       <TinymceEditor
         initValue={intro}
         handleEditorChange={handleEditorChange}
