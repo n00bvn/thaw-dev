@@ -26,7 +26,7 @@ export default function About() {
           {loading && <Loading />}
         </div>
         <div className="social-icons">
-          <a className="social-icon" href="mailto:mr.thaw1809@gmail.com"><i className="fas fa-envelope"></i></a>
+          <a className="social-icon" href="mailto:hi@thaw.dev"><i className="fas fa-envelope"></i></a>
           <a className="social-icon" href="https://github.com/n00bvn" target="_blank" rel="noopener noreferrer"><i className="fab fa-github"></i></a>
           <a className="social-icon" href="https://thaw.dev/CV_Thaw.pdf" target="_blank" rel="noopener noreferrer"><i className="fas fa-file"></i></a>
         </div>
