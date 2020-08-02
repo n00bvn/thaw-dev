@@ -30,10 +30,12 @@ export default function EditIntro({ toggleIntro }) {
   return (
     <Fragment>
       <h4>Edit Intro</h4>
-      <TinymceEditor
-        initValue={intro}
-        handleEditorChange={handleEditorChange}
-      />
+      {intro && (
+        <TinymceEditor
+          initValue={intro}
+          handleEditorChange={handleEditorChange}
+        />
+      )}
       <div className="mt-4 text-center">
         <button className="btn btn-primary btn-lg mr-3" onClick={(e) => handleSubmit(e)}>Update Changes</button>
         <button className="btn btn-secondary" onClick={() => toggleIntro()}>Cancel</button>
