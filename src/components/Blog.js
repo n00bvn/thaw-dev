@@ -36,6 +36,15 @@ export default function Blog() {
     });
   }
 
+  const add_animate_to_elements = () => {
+    document.querySelectorAll('.js-tag-animate').forEach(el => {
+      el.className += ' animate__animated animate__bounceIn';
+    });
+    document.querySelectorAll('.js-article-animate').forEach(el => {
+      el.className += ' animate__animated animate__zoomIn';
+    });
+  }
+
   useEffect(() => {
     firebaseDb.ref('articles').once('value', snapshot => {
       const a = snapshot.val();
@@ -66,6 +75,8 @@ export default function Blog() {
       }
 
       setLoading(false);
+
+      add_animate_to_elements();
     });
   }, []);
 
@@ -81,6 +92,8 @@ export default function Blog() {
     } else {
       setArticles(allArticles);
     }
+
+    add_animate_to_elements();
   }, [tag, allArticles]);
 
   useEffect(() => {
@@ -93,7 +106,7 @@ export default function Blog() {
   return (
     loading ? <Loading /> : (
       article ? (
-        <div className="container">
+        <div className="container animate__animated animate__fadeIn">
           <div className="row mt-4">
             <div className="col-12 mb-3 text-right">
               <button className="btn btn-primary" onClick={() => setArticle(null)}>Back</button>
@@ -122,7 +135,7 @@ export default function Blog() {
                 ) : (
                     tags.map(tag => {
                       return (
-                        <span className="badge badge-primary ml-3 btnTag cs-pt badge-link-primary" key={tag}>{tag}</span>
+                        <span className="badge badge-primary ml-3 btnTag cs-pt badge-link-primary js-tag-animate" key={tag}>{tag}</span>
                       )
                     })
                   )}
@@ -130,7 +143,7 @@ export default function Blog() {
 
               {articles.map(article => {
                 return (
-                  <div className="col-lg-6 col-md-12 mb-4" key={article.id}>
+                  <div className="col-lg-6 col-md-12 mb-4 js-article-animate" key={article.id}>
                     <div className="card">
                       <h6 className="card-header text-primary cs-pt badge-link-secondary"
                         onClick={() => setArticle(article)}>
