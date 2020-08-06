@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react'
-import { firebaseDb } from '../firebase'
+import React, { useContext, useState, useEffect } from 'react'
+import { useParams, Link } from 'react-router-dom'
+import { BlogContext } from './contexts/BlogContext'
 
-import Loading from './Loading'
 import '../App.css'
 
 export default function Blog() {
-  const [articles, setArticles] = useState([]);
-  const [allArticles, setAllArticles] = useState([]);
-  const [tags, setTags] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [tag, setTag] = useState(null);
-  const [article, setArticle] = useState(null);
+  const params = useParams();
+  const { articles } = useContext(BlogContext);
+
+  const [blogArticles, setBlogArticles] = useState([]);
+  const [blogTags, setBlogTags] = useState([]);
+  const [blogTag, setBlogTag] = useState(null);
+  const [blogPost, setBlogPost] = useState(null);
 
   const filter_unique_array = array => {
     if (array.length > 0) {
@@ -27,145 +28,91 @@ export default function Blog() {
     }
   }
 
-  const add_click_event_to_tags = () => {
-    document.querySelectorAll('.btnTag').forEach(btn => {
-      btn.addEventListener('click', e => {
-        e.preventDefault();
-        setTag(e.target.textContent);
-      });
-    });
-  }
-
-  const add_animate_to_elements = () => {
-    document.querySelectorAll('.js-tag-animate').forEach(el => {
-      el.className += ' animate__animated animate__bounceIn';
-    });
-    document.querySelectorAll('.js-article-animate').forEach(el => {
-      el.className += ' animate__animated animate__zoomIn';
-    });
-  }
-
   useEffect(() => {
-    firebaseDb.ref('articles').once('value', snapshot => {
-      const a = snapshot.val();
-      if (a) {
-        let map_articles = [];
-        let map_tags = [];
-        for (let key in a) {
-          let article = a[key];
-          article.id = key;
-          // filter all the html tags from content
-          // article.description = article.content.replace(/<\w+[^>]*>(.+?)<\/\w+>/g, "$1");
-          article.description = article.content.replace(/<\w+[^>]*>/g, "").replace(/<\/\w+>/g, "");
-          map_articles.push(article);
-          map_tags = map_tags.concat(article.tags);
-        }
-
-        map_articles.sort((a1, a2) => {
-          return new Date(a2.createdAt) - new Date(a1.createdAt);
-        });
-
-        setArticles(map_articles);
-        setAllArticles(map_articles);
-        setTags(filter_unique_array(map_tags).sort(() => {
-          return .5 - Math.random();
-        }));
-
-        add_click_event_to_tags();
-      }
-
-      setLoading(false);
-
-      add_animate_to_elements();
-    });
-  }, []);
-
-  useEffect(() => {
-    add_click_event_to_tags();
-  });
-
-  useEffect(() => {
-    if (tag) {
-      setArticles(allArticles.filter(article => {
-        return article.tags.includes(tag);
-      }));
+    if (params.blog_id) {
+      setBlogArticles([]);
+      setBlogTag(null);
+      setBlogTags([]);
+      setBlogPost(articles.find(article => article.id === params.blog_id));
+    } else if (params.tag) {
+      setBlogPost(null);
+      setBlogTags([]);
+      setBlogTag(params.tag);
+      setBlogArticles(articles.filter(article => article.tags.includes(params.tag)));
     } else {
-      setArticles(allArticles);
+      setBlogPost(null);
+      setBlogTag(null);
+      const tags = [];
+      articles.map(article => article.tags.map(tag => tags.push(tag)));
+      setBlogTags(filter_unique_array(tags));
+      setBlogArticles(articles);
     }
-
-    add_animate_to_elements();
-  }, [tag, allArticles]);
-
-  useEffect(() => {
-    if (article) {
-      document.getElementById('article_content_area').innerHTML = article.content;
-      window.Prism.highlightAll();
-    }
-  }, [article]);
+  }, [params, articles]);
 
   return (
-    loading ? <Loading /> : (
-      article ? (
-        <div className="container animate__animated animate__fadeIn">
-          <div className="row mt-4">
-            <div className="col-12 mb-3 text-right">
-              <button className="btn btn-primary" onClick={() => setArticle(null)}>Back</button>
-            </div>
-            <div className="col-12">
-              <h4>{article.title}</h4>
-              <div className="mt-3" id="article_content_area"></div>
-            </div>
-            <div className="col-12 mt-4 text-right">
-              <button className="btn btn-primary" onClick={() => setArticle(null)}>Back</button>
-            </div>
+    blogPost ? (
+      <div className="container animate__animated animate__fadeIn">
+        <div className="row mt-4">
+          <div className="col-12 mb-3 text-right">
+            <Link to="/blog" className="btn btn-primary">Back</Link>
+          </div>
+          <div className="col-12">
+            <h4>{blogPost.title}</h4>
+            <div className="mt-3" dangerouslySetInnerHTML={{ __html: blogPost.content }}></div>
+          </div>
+          <div className="col-12 mt-4 mb-4 text-right">
+            <Link to="/blog" className="btn btn-primary">Back</Link>
           </div>
         </div>
-      ) : (
-          <div className="container">
-            <div className="row mt-4">
-              <div className="col-12 text-center mb-4">
-                {tag ? (
-                  <div className="row">
-                    <div className="col-12 text-right mb-4">
-                      <button className="btn btn-secondary" onClick={() => setTag(null)}>
-                        {tag} <span className="badge badge-dark ml-1">X</span>
-                      </button>
-                    </div>
+      </div>
+    ) : (
+        <div className="container">
+          <div className="row mt-4">
+            <div className="col-12 text-center mb-4">
+              {blogTag ? (
+                <div className="row">
+                  <div className="col-12 text-right mb-4">
+                    <Link to="/blog" className="btn btn-secondary">
+                      {blogTag} <span className="badge badge-dark ml-1">X</span>
+                    </Link>
                   </div>
-                ) : (
-                    tags.map(tag => {
-                      return (
-                        <span className="badge badge-primary ml-3 btnTag cs-pt badge-link-primary js-tag-animate" key={tag}>{tag}</span>
-                      )
-                    })
-                  )}
-              </div>
-
-              {articles.map(article => {
-                return (
-                  <div className="col-lg-6 col-md-12 mb-4 js-article-animate" key={article.id}>
-                    <div className="card">
-                      <h6 className="card-header text-primary cs-pt badge-link-secondary"
-                        onClick={() => setArticle(article)}>
-                        {article.title}
-                      </h6>
-                      <div className="card-body">
-                        <p className="card-text">{`${article.description.substr(0, 255)} ...`}</p>
-                      </div>
-                      <div className="card-footer text-right px-0">
-                        {article.tags.map(tag => {
-                          return (
-                            <button className="btn btn-link btnTag footerTag py-0 px-2" key={tag}>{tag}</button>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                )
-              })}
+                </div>
+              ) : (
+                  blogTags.map(tag => {
+                    return (
+                      <Link to={`/blog/tag/${tag}`} className="badge badge-primary ml-3 btnTag cs-pt badge-link-primary animate__animated animate__bounceIn" key={tag}>
+                        {tag}
+                      </Link>
+                    )
+                  })
+                )}
             </div>
+
+            {blogArticles.map(article => {
+              return (
+                <div className="col-lg-6 col-md-12 mb-4 animate__animated animate__zoomIn" key={article.id}>
+                  <div className="card">
+                    <h6 className="card-header text-primary cs-pt badge-link-secondary">
+                      <Link to={`/blog/${article.id}`}>{article.title}</Link>
+                    </h6>
+                    <div className="card-body">
+                      <p className="card-text">{`${article.description.substr(0, 255)} ...`}</p>
+                    </div>
+                    <div className="card-footer text-right px-0">
+                      {article.tags.map(tag => {
+                        return (
+                          <Link to={`/blog/tag/${tag}`} className="btn btn-link btnTag footerTag py-0 px-2" key={tag}>
+                            {tag}
+                          </Link>
+                        )
+                      })}
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
           </div>
-        )
-    )
+        </div>
+      )
   )
 }

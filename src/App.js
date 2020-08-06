@@ -5,15 +5,19 @@ import Main from './components/Main'
 import Admin from './components/Admin'
 import NotFound from './components/NotFound'
 
+import { BlogProvider } from './components/contexts/BlogContext'
+
 function App() {
   return (
-    <HashRouter basename="/">
-      <Switch>
-        <Route exact path="/admin/*" component={Admin} />
-        <Route exact path="/*" component={Main} />
-        <Route path="*" component={NotFound} />
-      </Switch>
-    </HashRouter>
+    <BlogProvider>
+      <HashRouter basename="/">
+        <Switch>
+          <Route exact path="/admin/*" component={Admin} />
+          <Route exact path="/*" component={Main} />
+          <Route path="*" component={NotFound} />
+        </Switch>
+      </HashRouter>
+    </BlogProvider>
   );
 }
 

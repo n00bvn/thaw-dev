@@ -53,6 +53,8 @@ export default function Main() {
         <div className="container-fluid p-0">
           <Switch>
             <Route exact path="/" component={About} />
+            <Route exact path="/blog/tag/:tag" component={Blog} />
+            <Route exact path="/blog/:blog_id" component={Blog} />
             <Route exact path="/blog" component={Blog} />
             <Route exact path="/resume" component={Resume} />
           </Switch>
