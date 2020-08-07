@@ -1,9 +1,10 @@
 import React, { Fragment, useEffect, useState } from 'react'
+import { Link, useHistory } from 'react-router-dom'
 import { firebaseDb } from '../../firebase'
 
 import TinymceEditor from './tinymce_editor'
 
-export default function EditIntro({ toggleIntro }) {
+export default function EditIntro() {
   const [intro, setIntro] = useState('');
   useEffect(() => {
     firebaseDb.ref('thaw_dev_intro').once('value', snapshot => {
@@ -15,6 +16,7 @@ export default function EditIntro({ toggleIntro }) {
     setIntro(content);
   }
 
+  const history = useHistory();
   const handleSubmit = (e) => {
     e.preventDefault();
     firebaseDb.ref('thaw_dev_intro').set(intro, (error) => {
@@ -22,7 +24,7 @@ export default function EditIntro({ toggleIntro }) {
         alert('ERROR');
         console.log(error);
       } else {
-        toggleIntro();
+        history.push('/');
       }
     });
   }
@@ -38,7 +40,7 @@ export default function EditIntro({ toggleIntro }) {
       )}
       <div className="mt-4 text-center">
         <button className="btn btn-primary btn-lg mr-3" onClick={(e) => handleSubmit(e)}>Update Changes</button>
-        <button className="btn btn-secondary" onClick={() => toggleIntro()}>Cancel</button>
+        <Link to="/" className="btn btn-secondary">Cancel</Link>
       </div>
     </Fragment>
   )

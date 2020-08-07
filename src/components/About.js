@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { firebaseDb } from '../firebase'
 
-import Loading from './Loading'
+import Loading from './commons/Loading'
 
 export default function About() {
   const [loading, setLoading] = useState(true);

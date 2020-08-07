@@ -1,124 +1,81 @@
-import React, { Fragment, useState, useEffect } from 'react'
-import { firebaseDb, firebaseAuth } from '../../firebase'
+import React, { useContext } from 'react'
+import { BlogContext } from '../contexts/BlogContext'
 import { Link } from 'react-router-dom'
-
-import EditIntro from './EditIntro'
-import Loading from '../Loading'
+import { DeleteArticle } from '../actions/BlogActions'
+import { AuthContext } from '../contexts/AuthContext'
+import { LogoutAction } from '../actions/AuthActions'
 
 export default function ListArticles() {
-  const [loading, setLoading] = useState(true);
-  const [articles, setArticles] = useState([]);
-  useEffect(() => {
-    document.getElementsByTagName("body")[0].style = 'padding-left: 0 !important';
-    firebaseDb.ref('articles').once('value')
-      .then(snapshot => {
-        const a = snapshot.val();
-        if (a) {
-          let map_articles = [];
-          for (let key in a) {
-            let article = a[key];
-            article.id = key;
-            map_articles.push(article);
-          }
-          map_articles.sort((a1, a2) => {
-            return new Date(a2.createdAt) - new Date(a1.createdAt);
-          });
-          setArticles(map_articles);
-        }
-        setLoading(false);
-      })
-      .catch(error => {
-        alert('ERROR');
-        console.log(error);
-        setLoading(false);
-      })
-  }, []);
+  const { blog_state, blog_dispatch } = useContext(BlogContext);
+  const articles = blog_state.articles;
 
-  const [editingIntro, setEditingIntro] = useState(false);
+  const { auth_dispatch } = useContext(AuthContext);
 
-  const toggleIntro = () => {
-    setEditingIntro(!editingIntro);
-  }
-
-  const handleDelete = article_id => {
-    firebaseDb.ref(`articles/${article_id}`).remove()
-      .then(() => {
-        setArticles(
-          articles.filter(article => {
-            return article.id !== article_id;
-          })
-        );
-      })
-      .catch(error => {
-        alert('ERROR');
-        console.log(error);
-      })
+  const handleDelete = article => {
+    if (window.confirm('Are your sure deleting the article?')) {
+      DeleteArticle(blog_dispatch, article);
+    }
   }
 
   const handleLogout = () => {
-    firebaseAuth.signOut()
-      .then(() => {
-        console.log('LOGGED OUT');
-      })
-      .catch((error) => {
-        alert('ERROR');
-        console.log(error);
-      })
+    LogoutAction(auth_dispatch);
   }
 
   return (
     <div className="container-fluid">
-      <div className="col-12 text-center">
-        <h4>Admin List Articles</h4>
-      </div>
+      {blog_state.message && (
+        <div className="alert alert-info">
+          {blog_state.message}
+        </div>
+      )}
 
-      <div className="col-12 mt-4">
-        {editingIntro ? <EditIntro toggleIntro={toggleIntro} /> : (
-          loading ? <Loading /> : (
-            <Fragment>
-              <div className="my-3 text-right">
-                <Link to="/articles/" className="btn btn-primary">Add new Article</Link>
-              </div>
+      <div className="row">
+        <div className="col-12 text-center">
+          <h4>Admin List Articles</h4>
+        </div>
 
-              <div className="table-responsive">
-                <table className="table">
-                  <thead className="thead-dark">
-                    <tr>
-                      <th scope="col">Title</th>
-                      <th scope="col">Content</th>
-                      <th scope="col">Tags</th>
-                      <th scope="col">Actions</th>
+        <div className="col-12 mt-4">
+          <div className="my-3 text-right">
+            <Link to="/articles/" className="btn btn-primary">Add new Article</Link>
+          </div>
+
+          <div className="table-responsive">
+            <table className="table">
+              <thead className="thead-dark">
+                <tr>
+                  <th scope="col">Title</th>
+                  <th scope="col">Content</th>
+                  <th scope="col">Tags</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {articles.map(article => {
+                  return (
+                    <tr key={article.id}>
+                      <td className="font-weight-bold">{article.title}</td>
+                      <td>{article.description}</td>
+                      <td>{article.tags.join(', ')}</td>
+                      <td className="text-center">
+                        <Link to={`/articles/${article.id}`} className="btn btn-success">Edit</Link><br />
+                        <button className="btn btn-danger btn-sm mt-3" onClick={() => handleDelete(article)}>Delete</button>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {articles.map(article => {
-                      return (
-                        <tr key={article.id}>
-                          <td className="font-weight-bold">{article.title}</td>
-                          <td>{article.content.substr(0, 125)}</td>
-                          <td>{article.tags.join(', ')}</td>
-                          <td className="text-center">
-                            <Link to={`/articles/${article.id}`} className="btn btn-success">Edit</Link><br />
-                            <button className="btn btn-danger btn-sm mt-3" onClick={() => handleDelete(article.id)}>Delete</button>
-                          </td>
-                        </tr>
-                      )
-                    })}
-                  </tbody>
-                </table>
-              </div>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
 
-              <div className="mt-4">
-                <button className="btn btn-primary" onClick={toggleIntro}>Edit Intro</button>
-              </div>
-            </Fragment>
-          )
-        )}
-      </div>
+          <div className="mt-4">
+            <Link to="/edit_intro" className="btn btn-primary">Edit Intro</Link>
+          </div>
+        </div>
 
-      <div className="col-12 p-4 text-right">
-        <button className="btn btn-link mr-5" onClick={() => handleLogout()}>Log Out</button>
-        <a href="/" className="ml-5">Back to Index</a>
+        <div className="col-12 p-4 text-right">
+          <button className="btn btn-link mr-5" onClick={() => handleLogout()}>Log Out</button>
+          <a href="/" className="ml-5">Back to Index</a>
+        </div>
       </div>
     </div>
   )

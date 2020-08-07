@@ -4,6 +4,9 @@ import { Link, HashRouter, Route, Switch } from 'react-router-dom'
 import About from './About'
 import Blog from './Blog'
 import Resume from './Resume'
+import Article from './blog/Article'
+import Tag from './blog/Tag'
+import NotFound from './commons/NotFound'
 
 export default function Main() {
   useEffect(() => {
@@ -53,10 +56,11 @@ export default function Main() {
         <div className="container-fluid p-0">
           <Switch>
             <Route exact path="/" component={About} />
-            <Route exact path="/blog/tag/:tag" component={Blog} />
-            <Route exact path="/blog/:blog_id" component={Blog} />
+            <Route exact path="/blog/tag/:tag" component={Tag} />
+            <Route exact path="/blog/:article_id" component={Article} />
             <Route exact path="/blog" component={Blog} />
             <Route exact path="/resume" component={Resume} />
+            <Route path="*" component={NotFound} />
           </Switch>
         </div>
       </Fragment>

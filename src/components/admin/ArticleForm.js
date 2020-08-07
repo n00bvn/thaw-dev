@@ -1,68 +1,47 @@
-import React, { useState, useEffect } from 'react'
-import { firebaseDb } from '../../firebase'
-import { Link } from 'react-router-dom'
-
+import React, { useState, useContext, useEffect } from 'react'
+import { Link, useParams, useHistory } from 'react-router-dom'
+import { BlogContext } from '../contexts/BlogContext'
+import { CreateArticle, UpdateArticle } from '../actions/BlogActions'
 import TinymceEditor from './tinymce_editor'
-import Loading from '../Loading'
+import { get_all_unique_tags } from '../utilities/blog'
 
-export default function ArticleForm(props) {
-  const initState = {
-    title: '',
-    content: '',
-    tags: [],
-    createdAt: ''
+export default function ArticleForm() {
+  const { blog_state, blog_dispatch, setBlogSubmiting } = useContext(BlogContext);
+  const articles = blog_state.articles;
+  const tags = get_all_unique_tags(articles);
+
+  const { article_id } = useParams();
+  let initState;
+  if (article_id) {
+    const a = articles.find(a => a.id === article_id);
+    initState = {
+      ...a,
+      tags: a.tags.join(', ')
+    };
+  } else {
+    initState = {
+      title: '',
+      content: '',
+      tags: '',
+      createdAt: ''
+    }
   }
   const [article, setArticle] = useState(initState);
 
-  const [loading, setLoading] = useState(true);
+  const history = useHistory();
 
   useEffect(() => {
-    if (props.match.params.article_id) {
-      firebaseDb.ref(`articles/${props.match.params.article_id}`).once('value')
-        .then(snapshot => {
-          let article = snapshot.val();
-          article.tags = article.tags.join(', ');
-          setArticle(article);
-          setLoading(false);
-        })
-        .catch(error => {
-          alert('ERROR');
-          console.log(error);
-          setLoading(false);
-        })
-    } else {
-      setLoading(false);
+    // After the form is successfully submited,
+    // we go to the list articles page
+    if (blog_state.submited) {
+      history.push("/");
     }
-  }, [props]);
+  }, [blog_state, history]);
 
   const handleSubmit = e => {
     e.preventDefault();
-    // update tags and createdAt
-    const submit_article = {
-      ...article,
-      tags: article.tags.split(', ')
-    }
-
-    if (props.match.params.article_id) {
-      firebaseDb.ref(`articles/${props.match.params.article_id}`).set(submit_article, error => {
-        if (error) {
-          alert('ERROR');
-          console.log(error);
-        } else {
-          props.history.goBack();
-        }
-      });
-    } else {
-      submit_article['createdAt'] = (new Date()).toString();
-      firebaseDb.ref('articles').push(submit_article, error => {
-        if (error) {
-          alert('ERROR');
-          console.log(error);
-        } else {
-          props.history.goBack();
-        }
-      });
-    }
+    setBlogSubmiting(true);
+    article_id ? UpdateArticle(blog_dispatch, article) : CreateArticle(blog_dispatch, article);
   }
 
   const handleChange = e => {
@@ -70,6 +49,17 @@ export default function ArticleForm(props) {
       ...article,
       [e.target.name]: e.target.value
     });
+
+    // suggest tags
+    if (e.target.name === 'tags') {
+      const current_tag = e.target.value.replace(/(.+, )/g, "");
+      const regex = new RegExp(current_tag, 'g');
+      const suggest_tags = tags.filter(
+        tag => tag.match(regex)
+      );
+
+      document.getElementById('divTagSuggestions').innerHTML = suggest_tags.join(', ');
+    }
   }
 
   const handleEditorChange = (content, editor) => {
@@ -83,18 +73,25 @@ export default function ArticleForm(props) {
     <div className="container-fluid">
       <div className="row">
         <div className="col-12 mt-5">
-          {loading ? <Loading /> : (
-            <form onSubmit={e => handleSubmit(e)} className="mt-5">
-              <input type="text" name="title" className="form-control mb-4" placeholder="Title" onChange={e => handleChange(e)} value={article.title} />
-              <TinymceEditor initValue={article.content} handleEditorChange={handleEditorChange} />
-              <input type="text" name="tags" className="form-control mt-4" placeholder="Tags" onChange={e => handleChange(e)} value={article.tags} />
-
-              <div className="text-center m-3">
-                <button className="btn btn-primary btn-lg mr-3" type="submit">Submit</button>
-                <Link to="/" className="btn btn-secondary">Cancel</Link>
-              </div>
-            </form>
+          {blog_state.error && (
+            <div className="alert alert-danger">
+              {blog_state.message}
+            </div>
           )}
+
+          <form onSubmit={e => handleSubmit(e)} className="mt-5">
+            <input type="text" name="title" className="form-control mb-4" placeholder="Title" onChange={e => handleChange(e)} value={article.title} />
+
+            <TinymceEditor initValue={article.content} handleEditorChange={handleEditorChange} />
+
+            <input type="text" name="tags" className="form-control mt-4" placeholder="Tags" onChange={e => handleChange(e)} value={article.tags} />
+            <div id="divTagSuggestions">{tags.join(', ')}</div>
+
+            <div className="text-center m-3">
+              <button className="btn btn-primary btn-lg mr-3" type="submit">Submit</button>
+              <Link to="/" className="btn btn-secondary">Cancel</Link>
+            </div>
+          </form>
         </div>
       </div>
     </div>
