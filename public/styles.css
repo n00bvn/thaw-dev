@@ -11122,3 +11122,23 @@ section.resume-section .resume-section-content {
   background-color: #4A5056;
   color: #D8B1A0;
 }
+
+@media (max-width: 576px) {
+  h1 {
+    font-size: 3rem !important;
+  }
+
+  .subheading {
+    font-size: 1rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 3.8rem !important;
+  }
+
+  .subheading {
+    font-size: 1.2rem !important;
+  }
+}
