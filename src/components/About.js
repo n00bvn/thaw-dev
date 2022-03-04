@@ -23,7 +23,7 @@ export default function About() {
               <span className="text-primary">Thaw</span>&nbsp;Tran
             </h1>
             <div className="subheading mb-5">
-              Full stack developer | Ruby, Python, React, Meteor
+              Full stack developer | Ruby, Python, ReactJS, Flutter
             </div>
           </div>
         )}
