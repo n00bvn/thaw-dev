@@ -9,7 +9,7 @@
 /coverage
 
 # production
-# /build # push for gh-pages
+/build
 
 # misc
 .DS_Store
