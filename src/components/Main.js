@@ -35,7 +35,7 @@ export default function Main() {
           <div className="social-icons-sidebar d-none d-lg-block">
             <a className="social-icon-sidebar" href="mailto:hi@thaw.dev"><i className="fas fa-envelope"></i></a>
             <a className="social-icon-sidebar" href="https://github.com/n00bvn" target="_blank" rel="noopener noreferrer"><i className="fab fa-github"></i></a>
-            <a className="social-icon-sidebar" href="https://thaw.dev/CV_Thaw.pdf" target="_blank" rel="noopener noreferrer"><i className="fas fa-file"></i></a>
+            <a className="social-icon-sidebar" href="https://thaw.dev/Thaw - senior software engineer.pdf" target="_blank" rel="noopener noreferrer"><i className="fas fa-file"></i></a>
           </div>
           <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" id="js-nav-toggle"><span className="navbar-toggler-icon"></span></button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">

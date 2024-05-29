@@ -23,7 +23,7 @@ export default function About() {
               <span className="text-primary">Thaw</span>&nbsp;Tran
             </h1>
             <div className="subheading mb-5">
-              Full stack developer | Ruby, Python, ReactJS, Flutter
+              Senior Software Engineer | Ruby, Python, Javascript, Flutter
             </div>
           </div>
         )}
@@ -34,7 +34,7 @@ export default function About() {
           <div className="social-icons animate__animated animate__bounceInUp">
             <a className="social-icon" href="mailto:hi@thaw.dev"><i className="fas fa-envelope"></i></a>
             <a className="social-icon" href="https://github.com/n00bvn" target="_blank" rel="noopener noreferrer"><i className="fab fa-github"></i></a>
-            <a className="social-icon" href="https://thaw.dev/CV_Thaw.pdf" target="_blank" rel="noopener noreferrer"><i className="fas fa-file"></i></a>
+            <a className="social-icon" href="https://thaw.dev/Thaw - senior software engineer.pdf" target="_blank" rel="noopener noreferrer"><i className="fas fa-file"></i></a>
             <a href="https://join.skype.com/invite/Vc7F9bjA1aFv" className="social-icon" target="_blank" rel="noopener noreferrer"><i className="fab fa-skype"></i></a>
           </div>
         )}
