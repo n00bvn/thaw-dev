@@ -61,7 +61,6 @@ export default function TinymceEditor({ initValue, handleEditorChange }) {
 
   return (
     <Editor
-      apiKey='tzlqdv32xyexkcxj8vyngahaf5uboud6x7b8uh87vjxv0czv'
       initialValue={initValue}
       init={INIT_TINYMCE_EDITOR}
       onEditorChange={handleEditorChange}
